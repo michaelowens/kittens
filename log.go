@@ -5,6 +5,8 @@ import (
 	"github.com/mgutz/ansi"
 	"log"
 	"os"
+	"time"
+	"strings"
 )
 
 var (
@@ -74,6 +76,10 @@ func (s Server) Logging(line *irc.Line) {
 	// Get some info for easier access
 	channel := line.Args[0]
 
+	// Current date
+	today := time.Now()
+	t := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, time.UTC).Local()
+
 	// If we don't have our "logs" folder, create it
 	if _, err := os.Stat("./logs"); err != nil {
 		if os.IsNotExist(err) {
@@ -97,5 +103,27 @@ func (s Server) Logging(line *irc.Line) {
 			verb("Creating directory \"logs/" + s.ServerName + "/" + channel + "\"")
 			os.Mkdir("./logs/"+s.ServerName+"/"+channel, perms)
 		}
+	}
+
+	// If we don't have our "logs/{server}/{channel}/{dateToday}" file,
+	// create it.
+	logPath := "./logs/" + s.ServerName + "/" + channel + "/" + t.Format("20060102150405")
+	if _, err := os.Stat(logPath); err != nil {
+		if os.IsNotExist(err) {
+			verb("Creating file \"logs/" + s.ServerName + "/" + channel + "\"")
+			f, err2 := os.Create(logPath)
+
+			if (err2 != nil) {
+				f.Chmod(perms);
+			}
+		}
+	}
+
+	if f, err := os.OpenFile(logPath, os.O_APPEND|os.O_WRONLY, perms); err != nil {
+		verbf("Error writing log: %s", err)
+	} else {
+		verb("Writing to log")
+		f.WriteString(time.Now().String() + " " + line.Nick + ": " + strings.Join(line.Args[1:], " ") + "\n")
+		defer f.Close()
 	}
 }
