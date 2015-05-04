@@ -1,0 +1,12 @@
+plugin: base
+author: Michael Owens
+description: u fkn wut m9
+
+commands:
+    test_one:
+        name: Test 1
+        command: test1
+
+    test_two:
+        name: Test 2
+        command: testtwo
