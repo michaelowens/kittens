@@ -26,6 +26,10 @@ func main() {
 
 	// Remove old sessions
 	CleanSessions()
+	
+	// Load plugins
+	info("Loading plugins...")
+	LoadPlugins()
 
 	info("Starting webserver")
 

@@ -122,7 +122,6 @@ func (s Server) Logging(line *irc.Line) {
 	if f, err := os.OpenFile(logPath, os.O_APPEND|os.O_WRONLY, perms); err != nil {
 		verbf("Error writing log: %s", err)
 	} else {
-		verb("Writing to log")
 		f.WriteString(time.Now().String() + " " + line.Nick + ": " + strings.Join(line.Args[1:], " ") + "\n")
 		defer f.Close()
 	}

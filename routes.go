@@ -104,6 +104,9 @@ func AddRoutes() {
 	// a specific channel and parts it.
 	route.HandleFunc("/server/{id}/channel/part", HandlePartChannel).Methods("POST")
 
+	// Handles GET requests for "/plugins" which is a plugin overview page
+	route.HandleFunc("/plugins", HandlePlugins).Methods("GET")
+
 	// Handle all other static files and folders (eg. CSS/JS).
 	route.PathPrefix("/").Handler(http.FileServer(http.Dir("./public")))
 }

@@ -624,6 +624,22 @@ func HandleAddNew(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Handle "/plugins" web
+func HandlePlugins(w http.ResponseWriter, req *http.Request) {
+	// Check if logged in
+	if !IsLoggedIn(w, req) {
+		http.Redirect(w, req, "/login", http.StatusSeeOther)
+	} else {
+		// Refresh the templates
+		if *debugFlag {
+			templates = RefreshTemplates(req)
+		}
+
+		// Execute template
+		templates.Funcs(AddTemplateFunctions(req)).ExecuteTemplate(w, "plugins", WhoAmI(req))
+	}
+}
+
 // Handle "/settings" web
 func HandleSettings(w http.ResponseWriter, req *http.Request) {
 	if !IsLoggedIn(w, req) {
